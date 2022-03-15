@@ -2,6 +2,7 @@ from time import sleep
 import matplotlib.pyplot as plt
 import numpy as np
 import cmath as bmath
+import itertools
 
 class plot():
   def __init__(self,fig,ax):
@@ -15,19 +16,21 @@ class plot():
     self.scatter = make_plot(self.ax.get_xbound(),self.ax.get_ybound())
 
 
-def f(x):
-  return(x**3-x**2+x-1)
-  
+def f(x,roots):
+  ex = 1
+  for i in roots:
+    ex = ex*(x+i) 
 
 
-def f_prime(x):
-  return(3*(x**2)-2*x+1)
+def f_prime(x,roots):
+  things = list(map(lambda x,root:(x-root),[x]*len(roots),[x]*len(roots),roots))
+  return(sum(itertools.permutations(things,len(things)-1)))
 
 
-def newtons_method(x):
+def newtons_method(x,roots):
   while True:
-    f_p=f_prime(x) 
-    fn = f(x)
+    f_p=f_prime(x,roots) 
+    fn = f(x,roots)
     if abs(fn)<= .00001:
       return(x)
     if f_p == 0:
@@ -49,11 +52,17 @@ def min_index(jimbo):
 
 
 def make_plot(x,y):
-  x = np.arange(x[0],x[1],(x[1]-x[0])/400)
-  y = np.arange(y[0],y[1],(y[1]-y[0])/400)
+  roots = []
+  done = False
+  while not done:
+    roots.append(input('enter a root '))
+    if input('done? ') == 'yes':
+      done = True
+  x = np.arange(x[0],x[1],(x[1]-x[0])/50)
+  y = np.arange(y[0],y[1],(y[1]-y[0])/50)
   x1,x2 = np.meshgrid(x,y)
   cx = list(map(complex,x1.flatten(),x2.flatten()))
-  roots = [find_roots()]*len(cx)
+  roots = [roots]*len(cx)
   root = list(map(newtons_method,cx)) 
   c = list(map(colorize,root,roots))
   return(plt.scatter(x1.flatten(),x2.flatten(),c = c,s = 1,marker = '.'))
@@ -65,5 +74,4 @@ def main():
   p.fig.canvas.mpl_connect('button_release_event',p.resize)
   plt.show()
 
-
-main()
+make_plot([-10,10],[-10,10])
