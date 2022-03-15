@@ -40,7 +40,13 @@ def newtons_method(x,roots):
     x=x-fn/f_p
 
 def find_roots():
-  return([0,1,complex(0,1),complex(0,-1)])
+  done = False
+  roots = []
+  while not done:
+    roots.append(input('enter a root '))
+    if input('done? ') == 'yes':
+      done = True
+  return(roots)
 
 
 def colorize(y,roots):
@@ -52,14 +58,9 @@ def min_index(jimbo):
 
 
 def make_plot(x,y):
-  roots = []
-  done = False
-  while not done:
-    roots.append(input('enter a root '))
-    if input('done? ') == 'yes':
-      done = True
+  roots = [find_roots()]
   x = np.arange(x[0],x[1],(x[1]-x[0])/50)
-  y = np.arange(y[0],y[1],(y[1]-y[0])/50)
+  y = np.arange(y[0],y[1],(y[1]-y[0])/400)
   x1,x2 = np.meshgrid(x,y)
   cx = list(map(complex,x1.flatten(),x2.flatten()))
   roots = [roots]*len(cx)
